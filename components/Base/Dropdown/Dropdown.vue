@@ -1,26 +1,27 @@
 <script setup lang="ts">
-import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
-import type { DropdownItemProps } from './types'
-import DropdownItem from './DropdownItem.vue'
+import { Menu, MenuButton, MenuItems } from "@headlessui/vue";
+import type { DropdownItemProps } from "./types";
+import DropdownItem from "./DropdownItem.vue";
+import CheveronDownIcon from "@heroicons/vue/24/outline/ChevronDownIcon.js";
 
 withDefaults(
   defineProps<{
-    modelValue?: boolean
-    btnProps?: Record<string, any>
-    label?: string
-    right?: boolean
-    items?: DropdownItemProps[]
+    modelValue?: boolean;
+    btnProps?: Record<string, any>;
+    label?: string;
+    right?: boolean;
+    items?: DropdownItemProps[];
   }>(),
   {
     modelValue: false,
     btnProps: () => ({
-      variant: 'secondary',
+      variant: "secondary",
     }),
-    label: 'Options',
+    label: "Options",
     right: false,
     items: () => [],
-  },
-)
+  }
+);
 </script>
 
 <template>
@@ -28,12 +29,10 @@ withDefaults(
     <div>
       <slot name="activator" :btn-props="btnProps" :label="label">
         <MenuButton as="button" class="text-sm" v-bind="btnProps">
-          {{ label }}
-          <Icon
-            name="heroicons:chevron-down"
-            class="w-4 h-4 inline"
-            aria-hidden="true"
-          />
+          <BaseButton>
+            {{ label }}
+            <CheveronDownIcon class="w-4 h-4 inline" aria-hidden="true" />
+          </BaseButton>
         </MenuButton>
       </slot>
     </div>
@@ -47,19 +46,7 @@ withDefaults(
       leave-to-class="transform scale-95 opacity-0"
     >
       <MenuItems
-        class="
-          absolute
-          z-10
-          p-1
-          w-56
-          mt-2
-          origin-top-right
-          bg-white
-          rounded-md
-          shadow-lg
-          ring-1 ring-black ring-opacity-5
-          focus:outline-none
-        "
+        class="absolute z-10 p-1 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
         :class="right ? 'right-0' : 'left-0'"
       >
         <slot>
