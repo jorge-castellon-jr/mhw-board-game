@@ -1,7 +1,7 @@
 export default {
   name: 'armorType',
   type: 'document',
-  title: 'Armor Type',
+  title: 'Armor Types',
   fields: [
     {
       name: 'name',

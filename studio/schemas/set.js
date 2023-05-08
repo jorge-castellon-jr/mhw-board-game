@@ -1,7 +1,7 @@
 export default {
   name: 'set',
   type: 'document',
-  title: 'Equipment Set',
+  title: 'Equipment Sets',
   fields: [
     {
       name: 'name',

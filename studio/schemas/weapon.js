@@ -26,23 +26,47 @@ export const damage = {
           }
         },
         {
+          name: 'image',
+          type: 'image',
+          title: 'Image',
+          hidden: true,
+          readOnly: true
+        },
+        {
           name: 'quantity',
           type: 'number',
           title: 'Quantity',
         }
-      ]
+      ],
+      initialValue: {
+        quantity: 1,
+        value: 1,
+        image: {
+          "_type": "image",
+          "asset": {
+              "_ref": "image-6ef6f5479d63ff96012e5ca97f63456685ad81ea-59x59-png",
+              "_type": "reference"
+          }
+        }
+      },
+      preview: {
+          select: {
+            value: 'value',
+            quatity: 'quantity',
+            media: 'image',
+          },
+          prepare({ value,quatity, media }) {
+            return {
+              title: `${value} dmg x ${quatity}`,
+              media
+            }
+          }
+        }
     }
   ],
-  preview: {
-    select: {
-      quatity: 'quantity',
-    },
-    prepare({ quatity }) {
-      return {
-        title: `x ${quatity}`,
-      }
-    }
-  }
+  initialValue: {
+    rarity: 1,
+  },
 }
 
 const raritySource = (doc) => {
@@ -53,7 +77,7 @@ const raritySource = (doc) => {
 export default {
   name: 'weapon',
   type: 'document',
-  title: 'Weapon',
+  title: 'Weapons',
   fields: [
     {
       name: 'id',
@@ -61,18 +85,6 @@ export default {
       title: 'ID',
       options: {
         source: 'name',
-        slugify: (input) => input
-          .toLowerCase()
-          .replace(/\s+/g, '_')
-      },
-      validation: (Rule) => Rule.required()
-    },
-    {
-      name: 'img',
-      type: 'slug',
-      title: 'Image Id',
-      options: {
-        source: raritySource,
         slugify: (input) => input
           .toLowerCase()
           .replace(/\s+/g, '_')
@@ -89,34 +101,18 @@ export default {
       type: 'reference',
       title: 'Weapon Type',
       to: [{ type: 'weaponType' }],
-    },
-    {
-      name: 'type',
-      type: 'string',
-      title: 'Weapon Type',
       options: {
-        list: [
-          { title: 'Great Sword', value: 'g-sword' },
-          { title: 'Duel Blades', value: 'd-blades' },
-          { title: 'Sword and Shield', value: 's-shield' },
-          { title: 'Bow', value: 'bow' },
-          { title: 'Switch Axe', value: 's-axe' },
-          { title: 'Charge Blade', value: 'c-blade' },
-          { title: 'Insect Glaive', value: 'i-glaive' },
-          { title: 'Heavy Bowgun', value: 'h-bowgun' },
-          { title: 'Hammer', value: 'hammer' },
-          { title: 'Hunting Horn', value: 'horn' },
-          { title: 'Lance', value: 'lance' },
-          { title: 'Gunlance', value: 'g-lance' },
-          { title: 'Light Bowgun', value: 'l-bowgun' },
-      ]
+        disableNew: true,
       }
     },
-
     {
-      name: 'description',
-      type: 'string',
-      title: 'Description'
+      name: 'set',
+      type: 'reference',
+      title: 'Armor Set',
+      to: [{ type: 'set' }],
+      options: {
+        disableNew: true,
+      }
     },
     {
       name: 'rarity',
@@ -127,7 +123,69 @@ export default {
       name: 'damage',
       type: 'damage',
       title: 'Damage'
-    }
+    },
+    {
+      name: 'remove',
+      type: 'array',
+      title: 'Remove Cards',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'card' }]
+        }
+      ]
+    },
+    {
+      name: 'add',
+      type: 'array',
+      title: 'Add Cards',
+      of: [
+        {
+          type: 'reference',
+          to: [{ type: 'card' }]
+        }
+      ]
+    },
+    {
+      name: 'resources',
+      type: 'array',
+      title: 'Resources',
+      of: [
+        {
+          name: 'resource',
+          type: 'object',
+          fields: [
+
+            {
+              name: 'resource',
+              type: 'reference',
+              to: [{ type: 'resourceDoc' }]
+            },
+            {
+              name: 'quantity',
+              type: 'number',
+              title: 'Quantity',
+            }
+          ],
+          initialValue: {
+            quantity: 1
+          },
+          preview: {
+            select: {
+              resource: 'resource.name',
+              quatity: 'quantity',
+              media: 'resource.image',
+            },
+            prepare({ resource, quatity, media }) {
+              return {
+                title: `${quatity} x ${resource}`,
+                media
+              }
+            }
+          }
+        }
+      ],
+    },
   ],
   preview: {
     select: {

@@ -1,7 +1,7 @@
 export default {
   name: 'weaponType',
   type: 'document',
-  title: 'Weapon Type',
+  title: 'Weapon Types',
   fields: [
     {
       name: 'name',
