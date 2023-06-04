@@ -1,6 +1,6 @@
 import armorType from "./armorType"
 
-export const element = {
+export const elements = {
   name: 'element',
   type: 'document',
   title: 'Elements',
@@ -132,43 +132,8 @@ export default {
     },
     {
       name: 'resources',
-      type: 'array',
+      type: 'resources',
       title: 'Resources',
-      of: [
-        {
-          name: 'resource',
-          type: 'object',
-          fields: [
-
-            {
-              name: 'resource',
-              type: 'reference',
-              to: [{ type: 'resourceDoc' }]
-            },
-            {
-              name: 'quantity',
-              type: 'number',
-              title: 'Quantity',
-            }
-          ],
-          initialValue: {
-            quantity: 1
-          },
-          preview: {
-            select: {
-              resource: 'resource.name',
-              quatity: 'quantity',
-              media: 'resource.image',
-            },
-            prepare({ resource, quatity, media }) {
-              return {
-                title: `${quatity} x ${resource}`,
-                media
-              }
-            }
-          }
-        }
-      ],
     },
   ],
   initialValue: {
