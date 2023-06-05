@@ -1,13 +1,14 @@
 .input {
-  @apply rounded-md w-full border-gray-300 transition duration-300;
+  @apply rounded-md w-full border-gray-600 transition duration-300;
   &:focus {
     @apply ring-1 ring-blue-500;
   }
 }
 .resources-group {
-  @apply grid grid-cols-3 gap-3 auto-rows-max;
+  @apply grid grid-cols-2 gap-3 auto-rows-max;
 }
 .section {
+  @apply space-y-2;
   margin-top: 2rem;
   h2 {
     @apply mb-2;
@@ -20,4 +21,26 @@ $nbs: $bs * -1;
   @apply font-extrabold text-white absolute -bottom-2 right-0 text-3xl;
   text-shadow: $nbs $nbs 0 #000, $bs $nbs 0 #000, $nbs $bs 0 #000,
     $bs $bs 0 #000;
+
+    &.prominent {
+      @apply inset-0 flex justify-center items-center text-5xl;
+    }
+}
+
+[type='text']:focus,
+[type='email']:focus,
+[type='url']:focus,
+[type='password']:focus,
+[type='number']:focus,
+[type='date']:focus,
+[type='datetime-local']:focus,
+[type='month']:focus,
+[type='search']:focus,
+[type='tel']:focus,
+[type='time']:focus,
+[type='week']:focus,
+[multiple]:focus,
+textarea:focus,
+select:focus {
+  box-shadow: none;
 }

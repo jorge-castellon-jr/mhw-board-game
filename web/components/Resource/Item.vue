@@ -10,24 +10,27 @@
       </div>
     </template>
     <template #default>
-      <div class="flex justify-center">
+      <q-card-section
+        class="flex justify-center items-center bg-blue-grey w-full"
+      >
         <div class="relative">
           <img
-            class="relative z-0 resource-img drop-shadow-md"
+            class="relative z-0 resource-img drop-shadow-md max-h-16"
             :src="`/img/resources/${resource.img}`"
           />
-          <span v-if="isInput" class="value">{{ resource.value }}</span>
+          <span v-if="isInput && !prominent" class="value">{{
+            resource.value
+          }}</span>
+          <span v-if="prominent" class="value prominent">{{
+            resource.value
+          }}</span>
         </div>
-      </div>
+      </q-card-section>
     </template>
     <template #footer>
-      <div class="flex">
-        <BaseButton @click="minus" :shadow="false" flat block variant="ghost">
-          -
-        </BaseButton>
-        <BaseButton @click="plus" :shadow="false" flat block variant="ghost">
-          +
-        </BaseButton>
+      <div class="grid grid-cols-2 gap-2 w-full justify-between">
+        <BaseButton @click="minus"> - </BaseButton>
+        <BaseButton @click="plus"> + </BaseButton>
       </div>
     </template>
   </BaseCard>
@@ -46,6 +49,10 @@ const props = defineProps({
   isInput: {
     type: Boolean,
     default: true,
+  },
+  prominent: {
+    type: Boolean,
+    default: false,
   },
 });
 

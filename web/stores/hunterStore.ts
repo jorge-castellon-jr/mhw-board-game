@@ -2,10 +2,12 @@ import { defineStore } from "pinia";
 import { Resource, ResourceCategory, resources } from "@/stores/Resources";
 import {
   Equipment,
+  EquipmentType,
   StartingEquipment,
   equipment,
   startingEquipment,
 } from "./Equipment";
+import { useAppStore } from "./appStore";
 
 export interface HunterInterface {
   id: string;
@@ -17,7 +19,7 @@ export interface HunterInterface {
   armor: Equipment[];
   equipment: Equipment[];
   health_potions: Resource;
-  day_tracker: number;
+  day_tracker: Resource;
 }
 
 export const useHunterStore = defineStore("hunter", {
@@ -29,6 +31,9 @@ export const useHunterStore = defineStore("hunter", {
     all_starting_equipment: startingEquipment,
   }),
   getters: {
+    hasHunters: (state) => {
+      return state.hunters.length > 0;
+    },
     isHunterSelected: (state) => {
       return state.currentHunter.id !== "";
     },
@@ -37,20 +42,32 @@ export const useHunterStore = defineStore("hunter", {
         (hunter) => hunter.id === id
       ) as HunterInterface;
     },
+    currentWeapon: (state) => {
+      return state.currentHunter.equipment.find(
+        (equipment) => equipment.type === EquipmentType.Weapon
+      );
+    },
+    currentGear: (state) => {
+      return state.currentHunter.equipment.filter(
+        (equipment) => equipment.type !== EquipmentType.Weapon
+      );
+    },
     common_resources: (state) => {
-      if (state.currentHunter.id !== "") return [];
+      console.log("common_resources", state.currentHunter);
+      if (state.currentHunter.id == "") return [];
+
       return state.currentHunter.resources.filter(
         (resource) => resource.category === ResourceCategory.Common
       );
     },
     other_resources: (state) => {
-      if (state.currentHunter.id !== "") return [];
+      if (state.currentHunter.id == "") return [];
       return state.currentHunter.resources.filter(
         (resource) => resource.category === ResourceCategory.Other
       );
     },
     monster_parts: (state) => {
-      if (state.currentHunter.id !== "") return [];
+      if (state.currentHunter.id == "") return [];
       return state.currentHunter.resources.filter(
         (resource) => resource.category === ResourceCategory.MonsterPart
       );
@@ -71,8 +88,8 @@ export const useHunterStore = defineStore("hunter", {
     },
   },
   actions: {
-    setCurrentHunter(hunterId: string) {
-      this.currentHunter = this.getHunterById(hunterId) as HunterInterface;
+    setCurrentHunter(hunter: HunterInterface) {
+      this.currentHunter = hunter;
     },
     addHunter(hunter: HunterInterface) {
       this.hunters.push(hunter);
@@ -91,6 +108,11 @@ export const useHunterStore = defineStore("hunter", {
           this.currentHunter.health_potions.value++;
         return;
       }
+      if (resourceId === "day_tracker") {
+        if (this.currentHunter.day_tracker.value < 99)
+          this.currentHunter.day_tracker.value++;
+        return;
+      }
       const resource = this.currentHunter.resources.find(
         (resource) => resource.id === resourceId
       ) as Resource;
@@ -101,6 +123,11 @@ export const useHunterStore = defineStore("hunter", {
       if (resourceId === "health_potions") {
         if (this.currentHunter.health_potions.value > 0)
           this.currentHunter.health_potions.value--;
+        return;
+      }
+      if (resourceId === "day_tracker") {
+        if (this.currentHunter.day_tracker.value > 1)
+          this.currentHunter.day_tracker.value--;
         return;
       }
       const resource = this.currentHunter.resources.find(
@@ -161,10 +188,12 @@ export const useHunterStore = defineStore("hunter", {
       if (starting_weapon != undefined) starting_weapon.active = true;
     },
     createHunter() {
+      console.log("createHunter");
+
       const newHunter = new Hunter() as HunterInterface;
       newHunter.id = Math.random().toString(36).substring(3);
-      this.addHunter(newHunter);
-      this.setCurrentHunter(newHunter.id);
+      // this.addHunter(newHunter);
+      this.setCurrentHunter(newHunter);
     },
   },
   persist: {
@@ -188,5 +217,11 @@ class Hunter {
     value: 0,
     img: "health-potion.png",
   };
-  day_tracker: number = 1;
+  day_tracker: Resource = {
+    id: "day_tracker",
+    name: "Campain Day",
+    category: ResourceCategory.CampaignDay,
+    value: 1,
+    img: "frame.png",
+  };
 }

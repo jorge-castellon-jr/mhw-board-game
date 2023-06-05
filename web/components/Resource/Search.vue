@@ -1,60 +1,30 @@
 <template>
   <div>
-    <Combobox>
-      <div class="relative">
-        <ComboboxInput
-          @change="query = $event.target.value"
-          placeholder="Search to add a resource"
-          class="input"
-        />
-        <ComboboxButton
-          class="absolute inset-y-0 right-0 flex items-center pr-2"
-        >
-          <MagnifyingGlassIcon class="w-4 h-4 inline" aria-hidden="true" />
-        </ComboboxButton>
-      </div>
-      <TransitionRoot
-        enter="transition ease-out duration-100 z-10"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition ease-in duration-100 z-10"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        @after-leave="query = ''"
-      >
-        <ComboboxOptions
-          class="resources-group dropdown"
-          :class="top ? 'top' : ''"
-        >
-          <ComboboxOption
-            v-for="resource in filteredResources"
-            :key="resource.id"
-            :value="resource"
-          >
-            <ResourceItem
-              :resource="resource"
-              :is-input="false"
-              @click="addResource(resource)"
-            />
-          </ComboboxOption>
-        </ComboboxOptions>
-      </TransitionRoot>
-    </Combobox>
+    <BaseInput
+      v-model="query"
+      placeholder="Search to add a resource"
+      input-class="text-center text-white"
+      rounded
+      dense
+    />
+    <div
+      class="fixed inset-2 top-24 bottom-28 bg-grey-9 p-2 rounded-2xl transition-opacity duration-300 grid grid-cols-2 gap-2 resources-group scroll"
+      :class="popup ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+    >
+      <ResourceItem
+        v-for="item in filteredResources"
+        :key="item.id"
+        :resource="item"
+        :is-input="false"
+        @click="addResource(item)"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Resource } from "~/stores/Resources";
 import { useHunterStore } from "~/stores/hunterStore";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxButton,
-  ComboboxOptions,
-  ComboboxOption,
-  TransitionRoot,
-} from "@headlessui/vue";
-import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
 
 const { top } = defineProps({
   top: {
@@ -66,7 +36,15 @@ const { top } = defineProps({
 const hunterStore = useHunterStore();
 
 const all_resources = hunterStore.all_resources;
+const popup = ref(false);
 const query = ref("");
+watch(query, () => {
+  if (query.value === "") {
+    popup.value = false;
+    return;
+  }
+  popup.value = true;
+});
 const filteredResources = computed(() =>
   query.value === ""
     ? all_resources
@@ -75,6 +53,7 @@ const filteredResources = computed(() =>
       })
 );
 const addResource = (resource: Resource) => {
+  query.value = "";
   hunterStore.addResource(resource);
 };
 </script>

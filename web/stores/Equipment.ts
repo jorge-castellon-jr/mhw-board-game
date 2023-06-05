@@ -172,7 +172,7 @@ export const equipment: Equipment[] = [
     rarity: 1,
     set: "iron.png",
     type: EquipmentType.Weapon,
-    img: "white-blades.png",
+    img: "white-d-blades.png",
     skill: null,
     stats: [
       {

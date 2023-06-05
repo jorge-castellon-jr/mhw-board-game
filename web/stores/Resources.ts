@@ -11,6 +11,7 @@ export enum ResourceCategory {
   MonsterPart,
   Inventory,
   HealthPotion,
+  CampaignDay
 }
 
 export const resources: Resource[] = [

@@ -1,61 +1,85 @@
 <template>
-  <div class="flex flex-col space-y-4">
-    <!-- list hunters as BaseButton from hunterStore -->
-    <BaseButton
-      v-for="hunter in hunterStore.hunters"
-      :key="hunter.id"
-      :to="`/hunter/${hunter.id}`"
-      shadow="lg"
-      size="hunter"
-      @click="hunterStore.setCurrentHunter(hunter.id)"
+  <div>
+    <q-tab-panels v-model="appStore.pageIndex" animated class="min-h-screen">
+      <q-tab-panel name="hunters">
+        <HunterGroup />
+      </q-tab-panel>
+      <q-tab-panel name="create">
+        <HunterCreate />
+      </q-tab-panel>
+      <q-tab-panel name="settings">
+        <PageSettings />
+      </q-tab-panel>
+      <q-tab-panel name="hidden">
+        <HunterEdit />
+      </q-tab-panel>
+    </q-tab-panels>
+    <div
+      class="fixed bottom-0 left-0 right-0 m-2 flex justify-center items-center"
     >
-      <div class="flex w-full justify-between text-gray-600">
-        <div class="flex flex-col items-start">
-          <div>
-            <span class="text-gray-400">Hunter:</span>
-            {{ hunter.hunter_name || "Hunter" }}
-          </div>
-          <div>
-            <span class="text-gray-400">Palico:</span>
-            {{ hunter.palico_name || "No Name" }}
-          </div>
+      <div class="relative">
+        <div
+          :class="appStore.pageIndex == 'hidden' ? ' -left-12 ' : 'left-0'"
+          class="absolute h-full flex items-center transition-all duration-250"
+        >
+          <q-btn
+            icon="chevron_left"
+            color="blue-grey"
+            round
+            @click="appStore.pageIndex = 'hunters'"
+          />
         </div>
-        <div class="flex flex-col items-end">
-          <div>
-            {{ hunter.campaign_name || "" }}
+        <q-tabs
+          v-model="appStore.pageIndex"
+          align="center"
+          class="bg-blue-grey rounded-full"
+          indicator-color="blue-grey-10"
+        >
+          <BaseTab name="hunters" icon="contact_page" />
+          <BaseTab
+            name="create"
+            icon="history_edu"
+            @click="hunterStore.createHunter()"
+          />
+          <BaseTab name="settings" icon="settings" />
+          <div
+            class="absolute inset-0 flex justify-around items-center z-10 pointer-events-none"
+          >
+            <q-icon
+              name="contact_page"
+              size="sm"
+              class="opacity-0 transition-all duration-500"
+              :class="appStore.pageIndex == 'hunters' ? 'opacity-100' : ''"
+            />
+            <q-icon
+              name="history_edu"
+              size="sm"
+              class="opacity-0 transition-all duration-500"
+              :class="appStore.pageIndex == 'create' ? 'opacity-100' : ''"
+            />
+            <q-icon
+              name="settings"
+              size="sm"
+              class="opacity-0 transition-all duration-500"
+              :class="appStore.pageIndex == 'settings' ? 'opacity-100' : ''"
+            />
           </div>
-          <div>
-            <span class="text-gray-400">Day:</span> {{ hunter.day_tracker }}
-          </div>
-        </div>
+        </q-tabs>
       </div>
-    </BaseButton>
-    <div class="absolute w-full left-0 bottom-0 p-2 bg-orange-900/75">
-      <BaseButton
-        class="w-full"
-        to="/hunter"
-        @click="createHunter"
-        shadow="lg"
-        size="lg"
-      >
-        Create Hunter
-      </BaseButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useHunterStore } from "~/stores/hunterStore";
+import { useAppStore } from "~/stores/appStore";
 
-const router = useRouter();
+const appStore = useAppStore();
 
 const hunterStore = useHunterStore();
-const createHunter = () => {
-  hunterStore.createHunter();
-};
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .section {
   margin-top: 2rem;
 }

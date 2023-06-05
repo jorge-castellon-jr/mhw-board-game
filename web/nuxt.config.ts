@@ -6,10 +6,13 @@ export default defineNuxtConfig({
     "@pinia-plugin-persistedstate/nuxt",
     "@nuxtjs/tailwindcss",
     "@nuxtjs/supabase",
-    'nuxt-quasar-ui'
+    'nuxt-quasar-vite'
   ],
   pinia: {
     // disableVuex: true,
     // enableDevtools: true,
   },
+  quasar: {
+    css: ['@quasar/extras/material-icons/material-icons.css']
+  }
 });

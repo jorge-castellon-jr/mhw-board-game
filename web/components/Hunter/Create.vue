@@ -1,8 +1,8 @@
 <template>
-  <div v-if="hunter" class="pb-10">
-    <h1>Hunter's Sheet</h1>
+  <div v-if="hunter" class="pb-24">
+    <h3>Create Hunter</h3>
     <div class="section">
-      <h2>Hunter's Info</h2>
+      <h4>Hunter's Info</h4>
       <BaseInput
         v-model="hunter.hunter_name"
         label="Hunter's Name"
@@ -23,17 +23,18 @@
       />
     </div>
     <div class="section">
-      <h2>Starting Equipment</h2>
-
-      <template v-if="hunter.equipment">
+      <template v-if="hunter.equipment.length">
+        <h4>Starting Equipment</h4>
+        <EquipmentCard :equipment="hunterStore.currentWeapon" />
         <div class="resources-group">
           <EquipmentCard
-            v-for="equipment in hunter.equipment"
+            v-for="equipment in hunterStore.currentGear"
             :equipment="equipment"
           />
         </div>
-        <h2 class="section">Change Starting Equipment</h2>
+        <h4 class="section">Change Starting Equipment</h4>
       </template>
+      <h4 v-else class="section">Choose Starting Equipment</h4>
       <div v-if="all_equipment.length" class="resources-group">
         <EquipmentCard
           v-for="equipment in all_equipment"
@@ -44,15 +45,16 @@
               : ''
           "
           @click="addEquipment(equipment)"
+          hide-footer
         />
       </div>
     </div>
-    <div class="section">
-      <h2>Add Resources</h2>
+    <!-- <div class="section">
+      <h4>Add Resources</h4>
       <ResourceSearch class="my-4" />
     </div>
     <div class="section">
-      <h2>Common Bones, Ores and Hides:</h2>
+      <h4>Common Bones, Ores and Hides:</h4>
       <div v-if="hunterStore.common_resources.length" class="resources-group">
         <ResourceItem
           v-for="resource in hunterStore.common_resources"
@@ -62,7 +64,7 @@
       <div v-else>No Common Resources</div>
     </div>
     <div class="section">
-      <h2>Other Bones, Ores and Hides:</h2>
+      <h4>Other Bones, Ores and Hides:</h4>
       <div v-if="hunterStore.other_resources.length" class="resources-group">
         <ResourceItem
           v-for="resource in hunterStore.other_resources"
@@ -72,7 +74,7 @@
       <div v-else>No Other Resources</div>
     </div>
     <div class="section">
-      <h2>Monster Parts:</h2>
+      <h4>Monster Parts:</h4>
       <div v-if="hunterStore.monster_parts.length" class="resources-group">
         <ResourceItem
           v-for="resource in hunterStore.monster_parts"
@@ -82,7 +84,7 @@
       <div v-else>No Monster Parts</div>
     </div>
     <div class="section">
-      <h2>Inventory:</h2>
+      <h4>Inventory:</h4>
       <div v-if="hunterStore.inventory.length" class="resources-group">
         <ResourceItem
           v-for="resource in hunterStore.inventory"
@@ -90,17 +92,9 @@
         />
       </div>
       <div v-else>No Inventory</div>
-    </div>
-    <div class="section">
-      <h2>Health Potions:</h2>
-      <ResourceItem :resource="hunter.health_potions" />
-      <h2>Campaign Day Tracker: {{ hunter.day_tracker }}</h2>
-    </div>
+    </div> -->
     <!-- <img src="~/assets/MHW__Note_Sheet.png" alt="" /> -->
-    <div
-      class="fixed w-full left-0 bottom-0 p-2 bg-orange-900/75 grid grid-cols-2 gap-2"
-    >
-      <BaseButton to="/">Back</BaseButton>
+    <div class="fixed left-4 right-4 bottom-16 grid grid-cols-1 gap-2 z-10">
       <BaseButton @click="save">Save</BaseButton>
     </div>
   </div>
@@ -109,28 +103,19 @@
 <script setup lang="ts">
 import { useHunterStore, HunterInterface } from "~/stores/hunterStore";
 import { StartingEquipment } from "~/stores/Equipment";
-import { Resource } from "~/stores/Resources";
+import { useAppStore } from "~/stores/appStore";
 
-const router = useRouter();
+const appStore = useAppStore();
 
 const hunterStore = useHunterStore();
 const hunter = hunterStore.currentHunter as HunterInterface;
-
-onBeforeMount(() => {
-  if (hunter.id === undefined) {
-    console.log(hunter.id);
-
-    router.push("/");
-  }
-});
 
 const all_equipment = hunterStore.all_starting_equipment;
 const addEquipment = (equipment: StartingEquipment) => {
   hunterStore.addStartingEquipment(equipment.id);
 };
-
 const save = () => {
-  hunterStore.updateHunter(hunter);
-  router.push("/");
+  hunterStore.addHunter(hunter);
+  appStore.pageIndex = "hunters";
 };
 </script>

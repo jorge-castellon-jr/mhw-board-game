@@ -1,12 +1,14 @@
 <template>
-  <BaseCard v-if="equipment" body-class="bg-gray-500" hideFooter>
+  <BaseCard v-if="equipment" body-class="bg-gray-500" :hideFooter="hideFooter">
     <template #header>
       <div class="text-sm">
         {{ equipment.name }}
       </div>
     </template>
     <template #default>
-      <div class="flex items-center justify-center space-x-4 mb-2">
+      <q-card-section
+        class="flex items-center justify-center space-x-4 bg-blue-grey-5 w-full"
+      >
         <div v-if="equipment.set" class="relative">
           <img
             class="drop-shadow-md max-h-[50px]"
@@ -19,11 +21,10 @@
             :src="`/img/equipment/${equipment.img}`"
           />
         </div>
-      </div>
-      <div
-        v-if="equipment.stats"
-        class="flex items-center justify-around flex-wrap"
-      >
+      </q-card-section>
+    </template>
+    <template #footer>
+      <div v-if="equipment.stats" class="flex items-center justify-around">
         <div v-for="stat in equipment.stats" class="relative flex items-center">
           <template v-if="stat.damage">
             <div class="relative">
@@ -63,8 +64,12 @@ import { Equipment, StartingEquipment } from "~/stores/Equipment";
 
 const { equipment } = defineProps({
   equipment: {
-    type: [Object as () => Equipment, Object as () => StartingEquipment],
+    type: [Object as () => Equipment],
     required: true,
+  },
+  hideFooter: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>
